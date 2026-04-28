@@ -1,0 +1,36 @@
+# Entornos virtuales de Python
+venv/
+env/
+.venv/
+.env/
+
+# Archivos de caché y compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*$py.class
+
+# Imágenes de prueba locales (no subir fotos NG/OK al repo de código)
+data/
+*.jpg
+*.png
+
+# Archivos de configuración de IDEs
+.idea/
+.vscode/
+*.swp
+
+# Archivos de dependencias (se usa requirements.txt en su lugar)
+pip-wheel-metadata/
+build/
+dist/
+*.egg-info/
+
+# Logs y archivos de runtime
+*.log
+*.tmp
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
