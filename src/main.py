@@ -1,11 +1,16 @@
 import time
 import json
 import paho.mqtt.client as mqtt
+import cv2
+import uuid
+from vision_algoritmo import procesar_imagen
 
 # Configuración MQTT (Estos valores luego pueden venir de variables de entorno)
 MQTT_BROKER = "192.168.1.100" # IP del servidor donde estará Mosquitto/Blazor
 MQTT_PORT = 1883
 TOPIC_RESULTADOS = "bitron/linea1/inspeccion/resultado"
+# Ruta a la imagen de prueba. En producción, esto vendría de una cámara.
+RUTA_IMAGEN_PRUEBA = "data/sample_image.png"
 
 def on_connect(client, userdata, flags, reason_code, properties):
     print(f"Conectado al broker MQTT con código: {reason_code}")
@@ -28,22 +33,28 @@ def iniciar_edge():
     
     try:
         while True:
-            # 1. Simular captura de cámara
-            # img = capturar_frame()
+            # 1. Capturar imagen (aquí leemos de un archivo para simular)
+            # En un sistema real, la función capturar_frame() se encargaría de esto.
+            img_gray = cv2.imread(RUTA_IMAGEN_PRUEBA, cv2.IMREAD_GRAYSCALE)
             
-            # 2. Llamar al algoritmo (vision_algoritmo.py)
-            # veredicto, datos_json = procesar_imagen(img)
+            if img_gray is None:
+                print(f"Error: No se pudo cargar la imagen de prueba en '{RUTA_IMAGEN_PRUEBA}'")
+                time.sleep(5)
+                continue
+
+            # 2. Llamar al algoritmo de visión
+            resultado_vision = procesar_imagen(img_gray)
             
-            # SIMULACIÓN DE PAYLOAD (Basado en nuestro modelo de datos)
-            payload_simulado = {
-                "transaccion_id": "sim-1234",
-                "veredicto_global": "OK",
-                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ")
+            # 3. Enriquecer el payload con metadatos
+            payload_final = {
+                "transaccion_id": f"tx-{uuid.uuid4()}",
+                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                **resultado_vision
             }
             
-            # 3. Publicar resultados al servidor
-            client.publish(TOPIC_RESULTADOS, json.dumps(payload_simulado))
-            print(f"Resultados publicados: {payload_simulado['veredicto_global']}")
+            # 4. Publicar resultados al servidor
+            client.publish(TOPIC_RESULTADOS, json.dumps(payload_final))
+            print(f"Resultados publicados: {payload_final['veredicto_global']} (Modelo: {payload_final.get('modelo_detectado', 'N/A')})")
             
             # Esperar antes de la siguiente captura (ajustar según el ciclo de la línea)
             time.sleep(5)
