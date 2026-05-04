@@ -46,19 +46,7 @@ Para ejecutar la aplicación localmente (sin Docker):
 python src/main.py
 ```
 
-# Bitron Vision Edge
-
-Módulo de procesamiento de imágenes al borde (Edge Computing) para la inspección de paneles de asiento BMW X6 G06. Desarrollado para Raspberry Pi / ESP32-S3.
-
-## Requisitos
-* Docker y Docker Compose
-* Python 3.10+ (para desarrollo local)
-
-## Desarrollo Local
-1. Instalar dependencias: `pip install -r requirements.txt`
-2. Ejecutar el orquestador: `python src/main.py`
-
-## Despliegue con Docker
+## Despliegue con Docker (**Pendiente**)
 Construir la imagen:
 `docker build -t bitron-vision-edge .`
 
